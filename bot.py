@@ -161,8 +161,8 @@ async def book_search(interaction: discord.Interaction, query: str):
         author = ", ".join(book.get("author_name", ["Unknown Author"]))
         first_publish_year = book.get("first_publish_year", "No year available")
 
-        imageKey = book.get("lending_edition_s", "")
-        cover_url = f"https://covers.openlibrary.org/b/olid/{imageKey}-M.jpg" if imageKey else None
+        imageKey = book.get("cover_i", "")
+        cover_url = f"https://covers.openlibrary.org/b/id/{imageKey}-M.jpg" if imageKey else None
 
         embed = discord.Embed(
             title=title,
@@ -261,7 +261,7 @@ async def colors(interaction: discord.Interaction):
 
     # Convert RGB to HEX
     hex_codes = [rgb_to_hex(color) for color in color_palette]
-    color_text = "\n".join(f"🎨 **Color {i+1}:** `{hex_code}`" for i, hex_code in enumerate(hex_codes))
+    color_text = "\n".join(f"**Color {i+1}:** `{hex_code}`" for i, hex_code in enumerate(hex_codes))
 
     # Generate image
     image_bytes = generate_color_image(color_palette)

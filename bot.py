@@ -1,6 +1,6 @@
 import discord
-import random
 import requests
+import random
 from discord.ext import commands
 from discord import app_commands
 import os
@@ -84,7 +84,47 @@ async def status_cat(interaction: discord.Interaction, status_code: int):
         await interaction.response.send_message("Please provide a valid HTTP status code (100-599).")
 
 @bot.tree.command(name="catpic2", description="Get another random cat image.")
-async def status_cat(interaction: discord.Interaction):
+async def catpic2(interaction: discord.Interaction):
     await interaction.response.send_message("https://cataas.com/cat")
+
+# Function to fetch a random tarot card and randomly select upright or reversed
+def get_random_tarot_card():
+    url = "https://tarotapi.dev/api/v1/cards/random?n=1"
+    card_data = get_response(url)
+    
+    if card_data:
+        card = card_data["cards"][0]
+        
+        # Randomly decide if the card is upright or reversed
+        orientation = random.choice(["up", "rev"])
+        
+        card_name = card["name"]
+        if orientation == "rev":
+            card_name += " (Reversed)"
+        meaning = card[f"meaning_{orientation}"]  # meaning_up or meaning_rev
+        description = card["desc"]
+        short = card["name_short"]
+        
+        return card_name, meaning, description, short
+    else:
+        return None, "Error: Unable to fetch tarot card."
+
+# Define the command to fetch and display the tarot card
+@bot.tree.command(name="tarot", description="Get a random tarot card reading")
+async def tarot(interaction: discord.Interaction):
+    card_name, meaning, description, short = get_random_tarot_card()
+    
+    if card_name:
+        # Create the embed object
+        embed = discord.Embed(title=f"Tarot Reading: {card_name}", description=f"**Meaning:** {meaning}\n**Description:** {description}", color=discord.Color.blue())
+        
+        # Set the image for the embed
+        embed.set_image(url=f"https://sacred-texts.com/tarot/pkt/img/{short}.jpg")
+        
+        # Send the embed to Discord
+        await interaction.response.send_message(embed=embed)
+    else:
+        await interaction.response.send_message("Sorry, I couldn't fetch a tarot card at the moment.")
+
 
 bot.run(DISCORD_TOKEN)

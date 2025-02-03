@@ -141,10 +141,6 @@ def search_books(query):
         return response.json().get("docs", [])
     return []
 
-@bot.event
-async def on_ready():
-    print(f'Logged in as {bot.user}')
-
 @bot.tree.command(name="book", description="Search for books by query")
 @app_commands.describe(query="Enter a book title, author, or keyword")
 async def book_search(interaction: discord.Interaction, query: str):
